@@ -12,9 +12,9 @@ export async function createArticle(formData: FormData) {
             id: 1,
           },
         },
-        title: formData.get('title'),
-        content: formData.get('content'),
-        slug: formData.get('slug'),
+        title: formData.get('title') as string,
+        content: formData.get('content') as string,
+        slug: formData.get('slug') as string,
       },
     })
     revalidateTag('/articles')
@@ -46,7 +46,7 @@ export async function updateTitle({
   } catch (err) {
     console.error(err)
     return {
-      error: err.message,
+      error: (err as any).message,
     }
   }
 }
