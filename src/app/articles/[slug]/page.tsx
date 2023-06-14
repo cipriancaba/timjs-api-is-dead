@@ -1,5 +1,6 @@
 import { prisma } from '../../lib/prisma'
-import Link from 'next/link'
+import React from 'react'
+import { ArticleComponent } from './article'
 
 const ArticlePage = async (props: { params: { slug: string } }) => {
   const article = await prisma.article.findUniqueOrThrow({
@@ -7,13 +8,7 @@ const ArticlePage = async (props: { params: { slug: string } }) => {
   })
   console.log('article', article)
 
-  return (
-    <div className="flex flex-col items-center gap-4 p-10">
-      <h1>{article.title}</h1>
-      <p>{article.content}</p>
-      <Link href="/articles">Back to articles</Link>
-    </div>
-  )
+  return <ArticleComponent article={article} />
 }
 
 export default ArticlePage

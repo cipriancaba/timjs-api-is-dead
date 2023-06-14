@@ -1,9 +1,9 @@
+'use server'
 import { redirect } from 'next/navigation'
 import { prisma } from '../lib/prisma'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 
 export async function createArticle(formData: FormData) {
-  'use server'
   try {
     const article = await prisma.article.create({
       data: {
@@ -21,5 +21,32 @@ export async function createArticle(formData: FormData) {
     redirect(`/articles/${article.slug}`)
   } catch (e) {
     console.error(e)
+  }
+}
+
+export async function updateTitle({
+  title,
+  articleId,
+}: {
+  title: string
+  articleId: number
+}) {
+  try {
+    const article = await prisma.article.update({
+      where: {
+        id: articleId,
+      },
+      data: {
+        title: title,
+      },
+    })
+
+    revalidatePath(`/articles/${article.slug}`)
+    revalidatePath('/articles')
+  } catch (err) {
+    console.error(err)
+    return {
+      error: err.message,
+    }
   }
 }
