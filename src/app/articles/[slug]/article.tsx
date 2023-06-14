@@ -8,6 +8,7 @@ import { updateTitle } from '../actions'
 export const ArticleComponent = ({ article }: { article: Article }) => {
   const [isEditing, setIsEditing] = React.useState(false)
   const [title, setTitle] = React.useState(article.title)
+  let [isPending, startTransition] = React.useTransition()
 
   console.log(title)
 
@@ -35,11 +36,14 @@ export const ArticleComponent = ({ article }: { article: Article }) => {
           <button
             className="rounded bg-blue-500 p-2 text-white"
             onClick={async () => {
-              await updateTitle({ articleId: article.id, title })
-              setIsEditing(false)
+              startTransition(() => {
+                updateTitle({ articleId: article.id, title }).then((res) => {
+                  setIsEditing(false)
+                })
+              })
             }}
           >
-            Save
+            {isPending ? 'Saving...' : 'Save'}
           </button>
         </>
       ) : (
